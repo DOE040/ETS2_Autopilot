@@ -33,32 +33,17 @@ def steering():
 
 mofpunt = (960, 720)
 
-# define white color range
-minimum = np.array([0, 0, 230])
-maximum = np.array([360, 10, 255])
-
-rho = 1  # distance resolution in pixels of the Hough grid
-theta = np.pi / 180  # angular resolution in radians of the Hough grid
-threshold = 5  # minimum number of votes (intersections in Hough grid cell)
-min_line_length = 5  # minimum number of pixels making up a line
-max_line_gap = 50  # maximum gap in pixels between connectable line segments
-
-kernel_size = 9
-
-low_threshold = 50
-high_threshold = 150
-
 t = threading.Thread(target=steering, daemon=True)
 t.start()
 
 while True:
-    t1 = time.perf_counter()
+    #t1 = time.perf_counter()
     #im = Image.open("img.jpg")
     im = pyautogui.screenshot()
     cimage = im.crop((760, 620, 1160, 1020))
     stat = ImageStat.Stat(cimage)
     print(stat.mean[0])
-    #image brightness & contrast enhancer
+    # Image brightness & contrast enhancer
     im = ImageEnhance.Brightness(im).enhance(0.005*(150/stat.mean[0]))
     im = ImageEnhance.Contrast(im).enhance(500)
     image = np.array(im)
@@ -86,6 +71,6 @@ while True:
     cv2.line(image, mofpunt, (mofpunt[0]+vvdright, mofpunt[1]), (0, 255, 0), 5)
 
     cv2.imshow("Color Detected", image)
-    t2 = time.perf_counter()
-    print(t2 - t1)
+    #t2 = time.perf_counter()
+    #print(t2 - t1)
     cv2.waitKey(2)
