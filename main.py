@@ -1,6 +1,6 @@
 import cv2, pyautogui
 import numpy as np
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageEnhance, ImageStat
 import time
 import threading
 import vgamepad as vg
@@ -24,12 +24,12 @@ def steering():
             gamepad.left_trigger(value=0)
             gamepad.right_trigger(value=int((greenleft - vvdright) / 10))
             gamepad.update()
-            print("steer left")
+            #print("steer left")
         elif vvdright > greenleft:  #Steer right
             gamepad.left_trigger(value=int((vvdright - greenleft) / 10))
             gamepad.right_trigger(value=0)
             gamepad.update()
-            print("steer right")
+            #print("steer right")
 
 mofpunt = (960, 720)
 
@@ -55,11 +55,13 @@ while True:
     t1 = time.perf_counter()
     #im = Image.open("img.jpg")
     im = pyautogui.screenshot()
-
-    #image brightness enhancer
-    Benhancer = ImageEnhance.Brightness(im)
-    Cenhancer = ImageEnhance.Contrast(Benhancer.enhance(0.005))
-    image = np.array(Cenhancer.enhance(500))
+    cimage = im.crop((760, 620, 1160, 1020))
+    stat = ImageStat.Stat(cimage)
+    print(stat.mean[0])
+    #image brightness & contrast enhancer
+    im = ImageEnhance.Brightness(im).enhance(0.005*(150/stat.mean[0]))
+    im = ImageEnhance.Contrast(im).enhance(500)
+    image = np.array(im)
 
     # Detect distance from point to road mark
     greenstop = False
